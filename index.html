@@ -1,516 +1,28 @@
-<!DOCTYPE html>
-<html lang="fr">
+/* =========================================================
+REMPLACE TOUT TON <script> ACTUEL PAR CELUI-CI
+========================================================= */
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+let loginMode = true;
+let freeAnalyses = 5;
 
-<title>DM Tribunal</title>
+const savedFreeAnalyses =
+localStorage.getItem("freeAnalyses");
 
-<style>
+if(savedFreeAnalyses !== null){
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
-}
-
-body{
-background:#07070b;
-color:white;
-overflow-x:hidden;
-}
-
-body::before{
-content:"";
-position:fixed;
-inset:0;
-
-background:
-radial-gradient(circle at top left,#ff2f92 0%,transparent 30%),
-radial-gradient(circle at bottom right,#7b2fff 0%,transparent 30%);
-
-opacity:0.15;
-z-index:-1;
-}
-
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:25px 8%;
-border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
-.logo{
-display:flex;
-align-items:center;
-gap:12px;
-font-size:26px;
-font-weight:bold;
-color:#ff5eb5;
-}
-
-.logo span{
-font-size:28px;
-color:#cfcfcf;
-}
-
-nav{
-display:flex;
-gap:18px;
-align-items:center;
-}
-
-nav button{
-background:none;
-border:none;
-color:#ccc;
-cursor:pointer;
-font-size:15px;
-transition:0.3s;
-}
-
-nav button:hover{
-color:#ff5eb5;
-}
-
-.main-btn{
-background:linear-gradient(90deg,#ff4fa3,#ff73c7);
-border:none;
-padding:14px 24px;
-border-radius:30px;
-color:white;
-cursor:pointer;
-font-weight:bold;
-}
-
-.hero{
-padding:80px 8%;
-display:flex;
-justify-content:space-between;
-gap:60px;
-align-items:flex-start;
-}
-
-.left{
-max-width:560px;
-}
-
-.left h1{
-font-size:74px;
-line-height:1;
-margin-bottom:25px;
-}
-
-.left h1 span{
-color:#ff5eb5;
-}
-
-.left p{
-color:#aaa;
-line-height:1.8;
-margin-bottom:35px;
-}
-
-.panel{
-width:450px;
-background:#111118;
-border:1px solid rgba(255,255,255,0.08);
-border-radius:28px;
-padding:25px;
-box-shadow:0 0 30px rgba(255,79,163,0.12);
-}
-
-textarea{
-width:100%;
-height:170px;
-background:#1a1a22;
-border:none;
-border-radius:18px;
-padding:18px;
-color:white;
-resize:none;
-margin-bottom:18px;
-}
-
-.upload{
-background:#1a1a22;
-padding:20px;
-border-radius:18px;
-margin-bottom:18px;
-}
-
-.upload p{
-margin-bottom:10px;
-color:#ccc;
-}
-
-input{
-width:100%;
-padding:15px;
-background:#1a1a22;
-border:none;
-border-radius:15px;
-color:white;
-margin-bottom:15px;
-}
-
-.preview{
-width:100%;
-border-radius:15px;
-margin-top:15px;
-display:none;
-}
-
-.result{
-margin-top:20px;
-background:rgba(255,255,255,0.04);
-padding:22px;
-border-radius:20px;
-display:none;
-}
-
-.result h2{
-margin-bottom:12px;
-}
-
-.examples{
-padding:70px 8%;
-}
-
-.examples h2{
-margin-bottom:30px;
-font-size:42px;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:20px;
-}
-
-.card{
-background:rgba(255,255,255,0.04);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:22px;
-padding:25px;
-}
-
-.card h3{
-margin-bottom:15px;
-color:#ff73c7;
-}
-
-.auth{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.85);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-.auth-box{
-width:420px;
-background:#111118;
-padding:30px;
-border-radius:25px;
-}
-
-.auth-box h2{
-margin-bottom:20px;
-}
-
-.switch{
-margin-top:15px;
-color:#aaa;
-font-size:14px;
-text-align:center;
-}
-
-.switch span{
-color:#ff73c7;
-cursor:pointer;
-}
-
-.help-box{
-padding:70px 8%;
-}
-
-.help-box h2{
-margin-bottom:20px;
-font-size:42px;
-}
-
-.help-box p{
-color:#aaa;
-line-height:1.8;
-max-width:800px;
-}
-
-footer{
-padding:50px;
-text-align:center;
-color:#777;
-}
-
-@media(max-width:950px){
-
-.hero{
-flex-direction:column;
-}
-
-.left h1{
-font-size:52px;
-}
-
-.panel{
-width:100%;
-}
-
-nav{
-display:none;
-}
+freeAnalyses = parseInt(savedFreeAnalyses);
 
 }
-
-</style>
-</head>
-
-<body>
-
-<header>
-
-<div class="logo">
-<span>⚖️</span>
-DM Tribunal
-</div>
-
-<nav>
-
-<button onclick="scrollToSection('home')">
-Accueil
-</button>
-
-<button onclick="scrollToSection('examples')">
-Exemples
-</button>
-
-<button onclick="scrollToSection('help')">
-Aide
-</button>
-
-<button class="main-btn" onclick="openAuth()">
-Créer un compte
-</button>
-
-</nav>
-
-</header>
-
-<section class="hero" id="home">
-
-<div class="left">
-
-<h1>
-Le tribunal de tes
-<span>messages</span>
-</h1>
-
-<p>
-Analyse automatiquement tes conversations et captures d’écran.
-Le tribunal détecte les vibes, les red flags, la froideur,
-la chaleur émotionnelle et rend un verdict.
-</p>
-
-<button class="main-btn" onclick="scrollToAnalyzer()">
-Analyser maintenant
-</button>
-
-</div>
-
-<div class="panel" id="analyzer">
-
-<h2 style="margin-bottom:20px;">
-Nouvelle analyse
-</h2>
-
-<textarea
-id="conversation"
-placeholder="Colle ici une conversation..."
-></textarea>
-
-<div class="upload">
-
-<p>
-Ajouter une capture d’écran ou un fichier
-</p>
-
-<input
-type="file"
-accept="image/*,.pdf,.txt"
-onchange="previewImage(event)"
->
-
-<img id="preview" class="preview">
-
-</div>
-
-<button
-class="main-btn"
-style="width:100%;"
-onclick="analyzeConversation()"
->
-Analyser
-</button>
-
-<div class="result" id="result">
-
-<h2 id="verdict"></h2>
-
-<p id="analysis"></p>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="examples" id="examples">
-
-<h2>
-Exemples de verdicts
-</h2>
-
-<div class="cards">
-
-<div class="card">
-
-<h3>
-🟢 Acquitté
-</h3>
-
-<p>
-“Tu me manques déjà ❤️”
-<br><br>
-Très forte énergie positive détectée.
-Intérêt mutuel probable.
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>
-🟠 Coupable
-</h3>
-
-<p>
-“ok”
-<br><br>
-Conversation froide et peu engageante.
-Manque d’investissement émotionnel.
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>
-🔴 Condamné
-</h3>
-
-<p>
-“vu”
-<br><br>
-Ghosting potentiel détecté.
-Très forte froideur émotionnelle.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="help-box" id="help">
-
-<h2>
-Aide
-</h2>
-
-<p>
-Colle une conversation ou ajoute une capture d’écran.
-Le système analyse automatiquement le ton,
-la chaleur émotionnelle, les réponses,
-les emojis et les signes d’intérêt.
-Ensuite, un verdict est rendu :
-Acquitté, Coupable ou Condamné.
-</p>
-
-</section>
-
-<footer>
-© 2026 — DM Tribunal
-</footer>
-
-<div class="auth" id="auth">
-
-<div class="auth-box">
-
-<h2 id="authTitle">
-Créer un compte
-</h2>
-
-<input
-type="text"
-id="username"
-placeholder="Nom d'utilisateur"
->
-
-<input
-type="email"
-id="email"
-placeholder="Adresse mail"
->
-
-<input
-type="password"
-id="password"
-placeholder="Mot de passe"
->
-
-<button
-class="main-btn"
-style="width:100%;"
-onclick="submitAuth()"
-id="authButton"
->
-Créer un compte
-</button>
-
-<div class="switch">
-
-<span onclick="toggleAuthMode()">
-Déjà un compte ? Se connecter
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-let loginMode = false;
 
 function openAuth(){
 
 document.getElementById("auth").style.display = "flex";
+
+}
+
+function closeAuth(){
+
+document.getElementById("auth").style.display = "none";
 
 }
 
@@ -527,14 +39,19 @@ document.getElementById("authButton");
 const switchText =
 document.querySelector(".switch span");
 
+const emailField =
+document.getElementById("email");
+
 if(loginMode){
 
-title.innerHTML = "Se connecter";
+title.innerHTML = "Connexion";
 
-button.innerHTML = "Connexion";
+button.innerHTML = "Se connecter";
 
 switchText.innerHTML =
 "Pas encore de compte ? Créer un compte";
+
+emailField.style.display = "none";
 
 }
 
@@ -542,10 +59,12 @@ else{
 
 title.innerHTML = "Créer un compte";
 
-button.innerHTML = "Créer un compte";
+button.innerHTML = "Créer le compte";
 
 switchText.innerHTML =
 "Déjà un compte ? Se connecter";
+
+emailField.style.display = "block";
 
 }
 
@@ -556,13 +75,15 @@ function submitAuth(){
 const username =
 document.getElementById("username").value;
 
-const email =
-document.getElementById("email").value;
-
 const password =
 document.getElementById("password").value;
 
-if(username === "" || email === "" || password === ""){
+const email =
+document.getElementById("email").value;
+
+if(loginMode){
+
+if(username === "" || password === ""){
 
 alert("Remplis tous les champs");
 
@@ -570,19 +91,96 @@ return;
 
 }
 
-if(loginMode){
+const users =
+JSON.parse(localStorage.getItem("users")) || [];
+
+const user =
+users.find(
+u =>
+u.username === username &&
+u.password === password
+);
+
+if(!user){
+
+alert("Nom d'utilisateur ou mot de passe incorrect");
+
+return;
+
+}
+
+localStorage.setItem(
+"loggedIn",
+"true"
+);
+
+localStorage.setItem(
+"loggedUser",
+username
+);
 
 alert("Connexion réussie ✅");
+
+closeAuth();
 
 }
 
 else{
 
-alert("Compte créé avec succès ✅");
+if(
+username === "" ||
+password === "" ||
+email === ""
+){
+
+alert("Remplis tous les champs");
+
+return;
 
 }
 
-document.getElementById("auth").style.display = "none";
+const users =
+JSON.parse(localStorage.getItem("users")) || [];
+
+const alreadyExists =
+users.find(
+u => u.username === username
+);
+
+if(alreadyExists){
+
+alert("Ce nom d'utilisateur existe déjà");
+
+return;
+
+}
+
+users.push({
+username,
+password,
+email
+});
+
+localStorage.setItem(
+"users",
+JSON.stringify(users)
+);
+
+localStorage.setItem(
+"loggedIn",
+"true"
+);
+
+localStorage.setItem(
+"loggedUser",
+username
+);
+
+alert("Compte créé avec succès ✅");
+
+closeAuth();
+
+}
 
 }
 
@@ -593,7 +191,7 @@ document.getElementById("auth");
 
 if(event.target === auth){
 
-auth.style.display = "none";
+closeAuth();
 
 }
 
@@ -641,8 +239,98 @@ preview.style.display = "block";
 
 function analyzeConversation(){
 
+const isLoggedIn =
+localStorage.getItem("loggedIn");
+
+if(
+freeAnalyses <= 0 &&
+!isLoggedIn
+){
+
+alert(
+"Tu as utilisé tes 5 analyses gratuites. Connecte-toi ou crée un compte pour continuer."
+);
+
+openAuth();
+
+return;
+
+}
+
 const text =
-document.getElementById("conversation").value.toLowerCase();
+document
+.getElementById("conversation")
+.value
+.toLowerCase();
+
+if(text.trim() === ""){
+
+alert("Ajoute une conversation");
+
+return;
+
+}
+
+let positive = 0;
+let negative = 0;
+
+const positiveWords = [
+
+"❤️",
+"🥰",
+"😍",
+"mdr",
+"love",
+"viens",
+"tu me manques",
+"beau",
+"belle",
+"hâte",
+"ensemble",
+"😘",
+"jtm",
+"t'aime"
+
+];
+
+const negativeWords = [
+
+"ok",
+"vu",
+"tg",
+"laisse moi",
+"ferme la",
+"bye",
+"jsp",
+"flemme",
+"tais toi",
+"non",
+"jamais",
+"mdrrr",
+"bah",
+"hein"
+
+];
+
+positiveWords.forEach(word=>{
+
+if(text.includes(word)){
+
+positive++;
+
+}
+
+});
+
+negativeWords.forEach(word=>{
+
+if(text.includes(word)){
+
+negative++;
+
+}
+
+});
 
 const result =
 document.getElementById("result");
@@ -653,37 +341,6 @@ document.getElementById("verdict");
 const analysis =
 document.getElementById("analysis");
 
-let positive = 0;
-let negative = 0;
-
-const positiveWords = [
-"❤️","🥰","😍","mdr","love",
-"viens","tu me manques","beau",
-"belle","hâte","ensemble","😘"
-];
-
-const negativeWords = [
-"ok","vu","tg","laisse moi",
-"ferme la","bye","jsp","flemme",
-"tais toi","non","jamais"
-];
-
-positiveWords.forEach(word=>{
-
-if(text.includes(word)){
-positive++;
-}
-
-});
-
-negativeWords.forEach(word=>{
-
-if(text.includes(word)){
-negative++;
-}
-
-});
-
 result.style.display = "block";
 
 if(positive >= 3 && negative <= 1){
@@ -692,7 +349,7 @@ verdict.innerHTML =
 "🟢 ACQUITTÉ";
 
 analysis.innerHTML =
-"Conversation chaleureuse détectée. Beaucoup d’intérêt émotionnel et une bonne énergie globale.";
+"Très forte chaleur émotionnelle détectée. La conversation paraît naturelle, engageante et réciproque.";
 
 }
 
@@ -702,7 +359,7 @@ verdict.innerHTML =
 "🔴 CONDAMNÉ";
 
 analysis.innerHTML =
-"Froideur émotionnelle très élevée. Red flags détectés et manque clair d’investissement.";
+"Conversation très froide détectée. Distance émotionnelle élevée et plusieurs red flags présents.";
 
 }
 
@@ -712,14 +369,95 @@ verdict.innerHTML =
 "🟠 COUPABLE";
 
 analysis.innerHTML =
-"Conversation mitigée. Quelques signes positifs mais également une certaine distance émotionnelle.";
+"Conversation mitigée. Quelques signes positifs mais aussi de la froideur émotionnelle.";
+
+}
+
+if(!isLoggedIn){
+
+freeAnalyses--;
+
+localStorage.setItem(
+"freeAnalyses",
+freeAnalyses
+);
+
+}
+
+updateFreeCounter();
+
+}
+
+function updateFreeCounter(){
+
+const isLoggedIn =
+localStorage.getItem("loggedIn");
+
+const counter =
+document.getElementById("freeCounter");
+
+if(isLoggedIn){
+
+const username =
+localStorage.getItem("loggedUser");
+
+counter.innerHTML =
+"Connecté en tant que : " + username;
+
+}
+
+else{
+
+counter.innerHTML =
+"Analyses gratuites restantes : " +
+freeAnalyses +
+"/5";
 
 }
 
 }
 
-</script>
+window.onload = () => {
 
-</body>
+toggleAuthMode();
+toggleAuthMode();
 
-</html>
+updateFreeCounter();
+
+};
+
+/* =========================================================
+AJOUTE AUSSI ÇA DANS LE HTML
+=========================================================
+
+1. REMPLACE LE BOUTON "Créer un compte" EN HAUT PAR :
+
+<button class="main-btn" onclick="openAuth()">
+Connexion
+</button>
+
+---------------------------------------------------------
+
+2. AJOUTE ÇA JUSTE EN DESSOUS DU HEADER :
+
+<div
+id="freeCounter"
+style="
+padding:15px 8%;
+color:#ff73c7;
+font-weight:bold;
+"
+>
+</div>
+
+---------------------------------------------------------
+
+3. AJOUTE id="email" AU CHAMP EMAIL :
+
+<input
+type="email"
+id="email"
+placeholder="Adresse mail"
+>
+
+========================================================= */
