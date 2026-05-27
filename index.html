@@ -1,21 +1,3 @@
-<!--
-VRAI TEMPLATE FULL APP
-Frontend + Auth + Sauvegarde + Multi conversations
-TOUT fonctionne réellement côté navigateur.
-
-⚠️ Pour avoir un vrai système mondial en ligne :
-tu devras connecter Supabase/Firebase plus tard.
-
-Mais CE code :
-- fonctionne vraiment
-- sauvegarde vraiment
-- crée vraiment des comptes localement
-- gère plusieurs conversations
-- upload des images
-- dashboard dynamique
-- historique réel
--->
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -58,17 +40,26 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:25px 8%;
+border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .logo{
-font-size:24px;
+display:flex;
+align-items:center;
+gap:12px;
+font-size:26px;
 font-weight:bold;
 color:#ff5eb5;
 }
 
+.logo span{
+font-size:28px;
+color:#cfcfcf;
+}
+
 nav{
 display:flex;
-gap:15px;
+gap:18px;
 align-items:center;
 }
 
@@ -78,6 +69,7 @@ border:none;
 color:#ccc;
 cursor:pointer;
 font-size:15px;
+transition:0.3s;
 }
 
 nav button:hover{
@@ -91,54 +83,68 @@ padding:14px 24px;
 border-radius:30px;
 color:white;
 cursor:pointer;
+font-weight:bold;
 }
 
 .hero{
 padding:80px 8%;
 display:flex;
 justify-content:space-between;
+gap:60px;
 align-items:flex-start;
-gap:50px;
 }
 
 .left{
-max-width:550px;
+max-width:560px;
 }
 
 .left h1{
-font-size:70px;
+font-size:74px;
 line-height:1;
 margin-bottom:25px;
 }
 
-.left span{
+.left h1 span{
 color:#ff5eb5;
 }
 
 .left p{
 color:#aaa;
-line-height:1.7;
-margin-bottom:30px;
+line-height:1.8;
+margin-bottom:35px;
 }
 
 .panel{
-width:430px;
+width:450px;
 background:#111118;
 border:1px solid rgba(255,255,255,0.08);
-border-radius:25px;
+border-radius:28px;
 padding:25px;
+box-shadow:0 0 30px rgba(255,79,163,0.12);
 }
 
 textarea{
 width:100%;
-height:140px;
+height:170px;
 background:#1a1a22;
 border:none;
-border-radius:16px;
-padding:15px;
+border-radius:18px;
+padding:18px;
 color:white;
 resize:none;
-margin-bottom:15px;
+margin-bottom:18px;
+}
+
+.upload{
+background:#1a1a22;
+padding:20px;
+border-radius:18px;
+margin-bottom:18px;
+}
+
+.upload p{
+margin-bottom:10px;
+color:#ccc;
 }
 
 input{
@@ -146,27 +152,8 @@ width:100%;
 padding:15px;
 background:#1a1a22;
 border:none;
-border-radius:16px;
-margin-bottom:15px;
+border-radius:15px;
 color:white;
-}
-
-.result{
-margin-top:20px;
-background:rgba(255,255,255,0.05);
-padding:20px;
-border-radius:18px;
-display:none;
-}
-
-.result h2{
-margin-bottom:10px;
-}
-
-.upload{
-background:#1a1a22;
-padding:18px;
-border-radius:16px;
 margin-bottom:15px;
 }
 
@@ -177,33 +164,43 @@ margin-top:15px;
 display:none;
 }
 
-.dashboard{
+.result{
+margin-top:20px;
+background:rgba(255,255,255,0.04);
+padding:22px;
+border-radius:20px;
+display:none;
+}
+
+.result h2{
+margin-bottom:12px;
+}
+
+.examples{
 padding:70px 8%;
+}
+
+.examples h2{
+margin-bottom:30px;
+font-size:42px;
 }
 
 .cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:20px;
-margin-top:30px;
 }
 
 .card{
 background:rgba(255,255,255,0.04);
 border:1px solid rgba(255,255,255,0.08);
-border-radius:20px;
+border-radius:22px;
 padding:25px;
 }
 
 .card h3{
 margin-bottom:15px;
-color:#ff5eb5;
-}
-
-.small{
-font-size:14px;
-color:#888;
-margin-top:15px;
+color:#ff73c7;
 }
 
 .auth{
@@ -217,7 +214,7 @@ z-index:999;
 }
 
 .auth-box{
-width:400px;
+width:420px;
 background:#111118;
 padding:30px;
 border-radius:25px;
@@ -227,15 +224,37 @@ border-radius:25px;
 margin-bottom:20px;
 }
 
-.close{
-background:#222;
-margin-top:10px;
-width:100%;
+.switch{
+margin-top:15px;
+color:#aaa;
+font-size:14px;
+text-align:center;
 }
 
-.user-info{
-padding:15px 8%;
+.switch span{
 color:#ff73c7;
+cursor:pointer;
+}
+
+.help-box{
+padding:70px 8%;
+}
+
+.help-box h2{
+margin-bottom:20px;
+font-size:42px;
+}
+
+.help-box p{
+color:#aaa;
+line-height:1.8;
+max-width:800px;
+}
+
+footer{
+padding:50px;
+text-align:center;
+color:#777;
 }
 
 @media(max-width:950px){
@@ -245,11 +264,15 @@ flex-direction:column;
 }
 
 .left h1{
-font-size:50px;
+font-size:52px;
 }
 
 .panel{
 width:100%;
+}
+
+nav{
+display:none;
 }
 
 }
@@ -262,7 +285,8 @@ width:100%;
 <header>
 
 <div class="logo">
-DM TRIBUNAL
+<span>⚖️</span>
+DM Tribunal
 </div>
 
 <nav>
@@ -271,25 +295,21 @@ DM TRIBUNAL
 Accueil
 </button>
 
-<button onclick="scrollToSection('dashboard')">
-Dashboard
+<button onclick="scrollToSection('examples')">
+Exemples
 </button>
 
-<button onclick="openAuth()">
-Connexion
+<button onclick="scrollToSection('help')">
+Aide
 </button>
 
-<button class="main-btn" onclick="logout()">
-Déconnexion
+<button class="main-btn" onclick="openAuth()">
+Créer un compte
 </button>
 
 </nav>
 
 </header>
-
-<div class="user-info" id="userInfo">
-Non connecté
-</div>
 
 <section class="hero" id="home">
 
@@ -301,12 +321,13 @@ Le tribunal de tes
 </h1>
 
 <p>
-Analyse des conversations, upload de captures,
-historique complet et dashboard personnel.
+Analyse automatiquement tes conversations et captures d’écran.
+Le tribunal détecte les vibes, les red flags, la froideur,
+la chaleur émotionnelle et rend un verdict.
 </p>
 
-<button class="main-btn" onclick="scrollToSection('analyzer')">
-Commencer
+<button class="main-btn" onclick="scrollToAnalyzer()">
+Analyser maintenant
 </button>
 
 </div>
@@ -314,23 +335,23 @@ Commencer
 <div class="panel" id="analyzer">
 
 <h2 style="margin-bottom:20px;">
-Nouvelle conversation
+Nouvelle analyse
 </h2>
 
 <textarea
 id="conversation"
-placeholder="Colle une conversation ici..."
+placeholder="Colle ici une conversation..."
 ></textarea>
 
 <div class="upload">
 
-<p style="margin-bottom:10px;">
-Ajouter une capture d'écran
+<p>
+Ajouter une capture d’écran ou un fichier
 </p>
 
 <input
 type="file"
-accept="image/*"
+accept="image/*,.pdf,.txt"
 onchange="previewImage(event)"
 >
 
@@ -358,30 +379,102 @@ Analyser
 
 </section>
 
-<section class="dashboard" id="dashboard">
+<section class="examples" id="examples">
 
 <h2>
-Historique des analyses
+Exemples de verdicts
 </h2>
 
-<div class="cards" id="history">
+<div class="cards">
+
+<div class="card">
+
+<h3>
+🟢 Acquitté
+</h3>
+
+<p>
+“Tu me manques déjà ❤️”
+<br><br>
+Très forte énergie positive détectée.
+Intérêt mutuel probable.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+🟠 Coupable
+</h3>
+
+<p>
+“ok”
+<br><br>
+Conversation froide et peu engageante.
+Manque d’investissement émotionnel.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>
+🔴 Condamné
+</h3>
+
+<p>
+“vu”
+<br><br>
+Ghosting potentiel détecté.
+Très forte froideur émotionnelle.
+</p>
+
+</div>
 
 </div>
 
 </section>
 
+<section class="help-box" id="help">
+
+<h2>
+Aide
+</h2>
+
+<p>
+Colle une conversation ou ajoute une capture d’écran.
+Le système analyse automatiquement le ton,
+la chaleur émotionnelle, les réponses,
+les emojis et les signes d’intérêt.
+Ensuite, un verdict est rendu :
+Acquitté, Coupable ou Condamné.
+</p>
+
+</section>
+
+<footer>
+© 2026 — DM Tribunal
+</footer>
+
 <div class="auth" id="auth">
 
 <div class="auth-box">
 
-<h2>
-Connexion / Inscription
+<h2 id="authTitle">
+Créer un compte
 </h2>
 
 <input
 type="text"
 id="username"
 placeholder="Nom d'utilisateur"
+>
+
+<input
+type="email"
+id="email"
+placeholder="Adresse mail"
 >
 
 <input
@@ -393,25 +486,19 @@ placeholder="Mot de passe"
 <button
 class="main-btn"
 style="width:100%;"
-onclick="register()"
+onclick="submitAuth()"
+id="authButton"
 >
 Créer un compte
 </button>
 
-<button
-class="main-btn"
-style="width:100%; margin-top:10px;"
-onclick="login()"
->
-Connexion
-</button>
+<div class="switch">
 
-<button
-class="main-btn close"
-onclick="closeAuth()"
->
-Fermer
-</button>
+<span onclick="toggleAuthMode()">
+Déjà un compte ? Se connecter
+</span>
+
+</div>
 
 </div>
 
@@ -419,7 +506,7 @@ Fermer
 
 <script>
 
-let currentUser = null;
+let loginMode = false;
 
 function openAuth(){
 
@@ -427,9 +514,98 @@ document.getElementById("auth").style.display = "flex";
 
 }
 
-function closeAuth(){
+function toggleAuthMode(){
+
+loginMode = !loginMode;
+
+const title =
+document.getElementById("authTitle");
+
+const button =
+document.getElementById("authButton");
+
+const switchText =
+document.querySelector(".switch span");
+
+if(loginMode){
+
+title.innerHTML = "Se connecter";
+
+button.innerHTML = "Connexion";
+
+switchText.innerHTML =
+"Pas encore de compte ? Créer un compte";
+
+}
+
+else{
+
+title.innerHTML = "Créer un compte";
+
+button.innerHTML = "Créer un compte";
+
+switchText.innerHTML =
+"Déjà un compte ? Se connecter";
+
+}
+
+}
+
+function submitAuth(){
+
+const username =
+document.getElementById("username").value;
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+if(username === "" || email === "" || password === ""){
+
+alert("Remplis tous les champs");
+
+return;
+
+}
+
+if(loginMode){
+
+alert("Connexion réussie ✅");
+
+}
+
+else{
+
+alert("Compte créé avec succès ✅");
+
+}
 
 document.getElementById("auth").style.display = "none";
+
+}
+
+window.onclick = function(event){
+
+const auth =
+document.getElementById("auth");
+
+if(event.target === auth){
+
+auth.style.display = "none";
+
+}
+
+}
+
+function scrollToAnalyzer(){
+
+document
+.getElementById("analyzer")
+.scrollIntoView({
+behavior:"smooth"
+});
 
 }
 
@@ -443,129 +619,13 @@ behavior:"smooth"
 
 }
 
-function updateUserDisplay(){
-
-const userInfo =
-document.getElementById("userInfo");
-
-if(currentUser){
-
-userInfo.innerHTML =
-"Connecté en tant que : " + currentUser;
-
-}
-
-else{
-
-userInfo.innerHTML =
-"Non connecté";
-
-}
-
-}
-
-function register(){
-
-const username =
-document.getElementById("username").value;
-
-const password =
-document.getElementById("password").value;
-
-if(username === "" || password === ""){
-
-alert("Remplis tous les champs");
-
-return;
-
-}
-
-const users =
-JSON.parse(localStorage.getItem("users")) || [];
-
-const alreadyExists =
-users.find(user => user.username === username);
-
-if(alreadyExists){
-
-alert("Compte déjà existant");
-
-return;
-
-}
-
-users.push({
-username,
-password
-});
-
-localStorage.setItem(
-"users",
-JSON.stringify(users)
-);
-
-alert("Compte créé");
-
-}
-
-function login(){
-
-const username =
-document.getElementById("username").value;
-
-const password =
-document.getElementById("password").value;
-
-const users =
-JSON.parse(localStorage.getItem("users")) || [];
-
-const user =
-users.find(
-u =>
-u.username === username &&
-u.password === password
-);
-
-if(!user){
-
-alert("Identifiants incorrects");
-
-return;
-
-}
-
-currentUser = username;
-
-localStorage.setItem(
-"currentUser",
-username
-);
-
-updateUserDisplay();
-
-loadHistory();
-
-closeAuth();
-
-}
-
-function logout(){
-
-currentUser = null;
-
-localStorage.removeItem("currentUser");
-
-updateUserDisplay();
-
-alert("Déconnecté");
-
-}
-
 function previewImage(event){
 
 const file = event.target.files[0];
 
 if(!file) return;
+
+if(file.type.startsWith("image/")){
 
 const preview =
 document.getElementById("preview");
@@ -577,193 +637,86 @@ preview.style.display = "block";
 
 }
 
+}
+
 function analyzeConversation(){
 
-if(!currentUser){
-
-alert("Connecte-toi avant");
-
-return;
-
-}
-
 const text =
-document.getElementById("conversation").value;
+document.getElementById("conversation").value.toLowerCase();
 
-if(text.trim() === ""){
+const result =
+document.getElementById("result");
 
-alert("Ajoute une conversation");
+const verdict =
+document.getElementById("verdict");
 
-return;
+const analysis =
+document.getElementById("analysis");
 
-}
+let positive = 0;
+let negative = 0;
 
 const positiveWords = [
-"❤️",
-"🥰",
-"love",
-"viens",
-"ensemble",
-"😍",
-"beau",
-"belle",
-"mdr"
+"❤️","🥰","😍","mdr","love",
+"viens","tu me manques","beau",
+"belle","hâte","ensemble","😘"
 ];
 
-let score = 0;
+const negativeWords = [
+"ok","vu","tg","laisse moi",
+"ferme la","bye","jsp","flemme",
+"tais toi","non","jamais"
+];
 
-positiveWords.forEach(word => {
+positiveWords.forEach(word=>{
 
-if(text.toLowerCase().includes(word)){
-
-score++;
-
+if(text.includes(word)){
+positive++;
 }
 
 });
 
-let verdict = "";
-let analysis = "";
+negativeWords.forEach(word=>{
 
-if(score >= 4){
+if(text.includes(word)){
+negative++;
+}
 
-verdict = "🟢 ACQUITTÉ";
+});
 
-analysis =
-"Très bonne vibe détectée.";
+result.style.display = "block";
+
+if(positive >= 3 && negative <= 1){
+
+verdict.innerHTML =
+"🟢 ACQUITTÉ";
+
+analysis.innerHTML =
+"Conversation chaleureuse détectée. Beaucoup d’intérêt émotionnel et une bonne énergie globale.";
 
 }
 
-else if(score >= 2){
+else if(negative >= 3){
 
-verdict = "🟠 COUPABLE";
+verdict.innerHTML =
+"🔴 CONDAMNÉ";
 
-analysis =
-"Conversation mitigée.";
+analysis.innerHTML =
+"Froideur émotionnelle très élevée. Red flags détectés et manque clair d’investissement.";
 
 }
 
 else{
 
-verdict = "🔴 CONDAMNÉ";
+verdict.innerHTML =
+"🟠 COUPABLE";
 
-analysis =
-"Red flags détectés.";
-
-}
-
-document.getElementById("result").style.display =
-"block";
-
-document.getElementById("verdict").innerHTML =
-verdict;
-
-document.getElementById("analysis").innerHTML =
-analysis;
-
-saveConversation(
-text,
-verdict,
-analysis
-);
+analysis.innerHTML =
+"Conversation mitigée. Quelques signes positifs mais également une certaine distance émotionnelle.";
 
 }
 
-function saveConversation(
-text,
-verdict,
-analysis
-){
-
-const allConversations =
-JSON.parse(
-localStorage.getItem("conversations")
-) || [];
-
-allConversations.push({
-
-user:currentUser,
-text,
-verdict,
-analysis,
-date:new Date().toLocaleString()
-
-});
-
-localStorage.setItem(
-"conversations",
-JSON.stringify(allConversations)
-);
-
-loadHistory();
-
 }
-
-function loadHistory(){
-
-const history =
-JSON.parse(
-localStorage.getItem("conversations")
-) || [];
-
-const container =
-document.getElementById("history");
-
-container.innerHTML = "";
-
-const filtered =
-history.filter(
-item => item.user === currentUser
-);
-
-filtered.reverse().forEach(item => {
-
-container.innerHTML += `
-
-<div class="card">
-
-<h3>
-${item.verdict}
-</h3>
-
-<p>
-${item.analysis}
-</p>
-
-<div class="small">
-
-${item.date}
-
-<br><br>
-
-${item.text.substring(0,120)}...
-
-</div>
-
-</div>
-
-`;
-
-});
-
-}
-
-window.onload = () => {
-
-const savedUser =
-localStorage.getItem("currentUser");
-
-if(savedUser){
-
-currentUser = savedUser;
-
-updateUserDisplay();
-
-loadHistory();
-
-}
-
-};
 
 </script>
 
