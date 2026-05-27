@@ -1,28 +1,50 @@
 /* =========================================================
-REMPLACE TOUT TON <script> ACTUEL PAR CELUI-CI
+SCRIPT COMPLET DM TRIBUNAL — VERSION MOOD ANALYSIS
+=========================================================
+
+✔ Analyse basée sur le mood
+✔ Pas limité à des mots précis
+✔ Détection énergie / froideur
+✔ Gen Z / Gen Alpha / Millennial vibes
+✔ Reset automatique
+✔ 5 analyses gratuites
+✔ Connexion / création de compte
+✔ Verdicts dynamiques
+✔ Analyses différentes à chaque fois
+
 ========================================================= */
 
 let loginMode = true;
 let freeAnalyses = 5;
 
-const savedFreeAnalyses =
+/* =========================================================
+CHARGEMENT STOCKAGE
+========================================================= */
+
+const savedAnalyses =
 localStorage.getItem("freeAnalyses");
 
-if(savedFreeAnalyses !== null){
+if(savedAnalyses !== null){
 
-freeAnalyses = parseInt(savedFreeAnalyses);
+freeAnalyses = parseInt(savedAnalyses);
 
 }
 
+/* =========================================================
+AUTH
+========================================================= */
+
 function openAuth(){
 
-document.getElementById("auth").style.display = "flex";
+document.getElementById("auth").style.display =
+"flex";
 
 }
 
 function closeAuth(){
 
-document.getElementById("auth").style.display = "none";
+document.getElementById("auth").style.display =
+"none";
 
 }
 
@@ -103,7 +125,7 @@ u.password === password
 
 if(!user){
 
-alert("Nom d'utilisateur ou mot de passe incorrect");
+alert("Identifiants incorrects");
 
 return;
 
@@ -142,14 +164,14 @@ return;
 const users =
 JSON.parse(localStorage.getItem("users")) || [];
 
-const alreadyExists =
+const exists =
 users.find(
 u => u.username === username
 );
 
-if(alreadyExists){
+if(exists){
 
-alert("Ce nom d'utilisateur existe déjà");
+alert("Ce nom existe déjà");
 
 return;
 
@@ -176,7 +198,7 @@ localStorage.setItem(
 username
 );
 
-alert("Compte créé avec succès ✅");
+alert("Compte créé ✅");
 
 closeAuth();
 
@@ -184,38 +206,9 @@ closeAuth();
 
 }
 
-window.onclick = function(event){
-
-const auth =
-document.getElementById("auth");
-
-if(event.target === auth){
-
-closeAuth();
-
-}
-
-}
-
-function scrollToAnalyzer(){
-
-document
-.getElementById("analyzer")
-.scrollIntoView({
-behavior:"smooth"
-});
-
-}
-
-function scrollToSection(id){
-
-document
-.getElementById(id)
-.scrollIntoView({
-behavior:"smooth"
-});
-
-}
+/* =========================================================
+PREVIEW IMAGE
+========================================================= */
 
 function previewImage(event){
 
@@ -237,10 +230,47 @@ preview.style.display = "block";
 
 }
 
+/* =========================================================
+COMPTEUR GRATUIT
+========================================================= */
+
+function updateFreeCounter(){
+
+const isLoggedIn =
+localStorage.getItem("loggedIn");
+
+const counter =
+document.getElementById("freeCounter");
+
+if(isLoggedIn){
+
+counter.innerHTML =
+"Connecté en tant que : " +
+localStorage.getItem("loggedUser");
+
+}
+
+else{
+
+counter.innerHTML =
+"Analyses gratuites restantes : " +
+freeAnalyses +
+"/5";
+
+}
+
+}
+
+/* =========================================================
+ANALYSE IA BASÉE SUR LE MOOD
+========================================================= */
+
 function analyzeConversation(){
 
 const isLoggedIn =
 localStorage.getItem("loggedIn");
+
+/* LIMITE GRATUITE */
 
 if(
 freeAnalyses <= 0 &&
@@ -248,7 +278,7 @@ freeAnalyses <= 0 &&
 ){
 
 alert(
-"Tu as utilisé tes 5 analyses gratuites. Connecte-toi ou crée un compte pour continuer."
+"Tu as utilisé tes 5 analyses gratuites."
 );
 
 openAuth();
@@ -257,13 +287,15 @@ return;
 
 }
 
-const text =
-document
-.getElementById("conversation")
-.value
-.toLowerCase();
+/* TEXTE */
 
-if(text.trim() === ""){
+const textarea =
+document.getElementById("conversation");
+
+const text =
+textarea.value.trim();
+
+if(text === ""){
 
 alert("Ajoute une conversation");
 
@@ -271,66 +303,194 @@ return;
 
 }
 
-let positive = 0;
-let negative = 0;
+const lower =
+text.toLowerCase();
 
-const positiveWords = [
+/* =========================================================
+ANALYSE D'ÉNERGIE
+========================================================= */
 
-"❤️",
-"🥰",
-"😍",
-"mdr",
-"love",
-"viens",
-"tu me manques",
-"beau",
-"belle",
-"hâte",
-"ensemble",
-"😘",
-"jtm",
-"t'aime"
+let warmth = 0;
+let coldness = 0;
+let effort = 0;
+let flirt = 0;
+let dryness = 0;
 
-];
+/* LONGUEUR */
 
-const negativeWords = [
+if(text.length > 300){
+
+effort += 3;
+warmth += 2;
+
+}
+
+if(text.length < 25){
+
+dryness += 3;
+coldness += 2;
+
+}
+
+/* ÉMOTIONS */
+
+const emojis =
+(text.match(/❤️|🥰|😍|😘|💕|💖|😭|😩|🫶|😻|☺️|😊/g) || []).length;
+
+warmth += emojis;
+
+/* PONCTUATION */
+
+const exclamations =
+(text.match(/!/g) || []).length;
+
+warmth += exclamations * 0.5;
+
+/* QUESTIONS */
+
+const questions =
+(text.match(/\?/g) || []).length;
+
+if(questions >= 2){
+
+interest += 2;
+
+}
+
+/* RÉPONSES SÈCHES */
+
+const dryReplies = [
 
 "ok",
-"vu",
-"tg",
-"laisse moi",
-"ferme la",
-"bye",
-"jsp",
-"flemme",
-"tais toi",
+"oui",
 "non",
-"jamais",
-"mdrrr",
+"jsp",
 "bah",
-"hein"
+"vu",
+"cool",
+"d'accord",
+"oe",
+"mdr.",
+"ptdr.",
+"hein",
+"si tu veux"
 
 ];
 
-positiveWords.forEach(word=>{
+dryReplies.forEach(word=>{
 
-if(text.includes(word)){
+if(lower.includes(word)){
 
-positive++;
+dryness++;
+coldness++;
+
+}
+
+});
+
+/* FLIRT */
+
+const flirtSignals = [
+
+"tu me manques",
+"jtm",
+"je t'aime",
+"viens",
+"on se voit",
+"trop beau",
+"trop belle",
+"bb",
+"babe",
+"mon coeur",
+"mon cœur",
+"princesse",
+"prends soin de toi",
+"bonne nuit",
+"good night",
+"love",
+"je pense à toi",
+"hâte de te voir"
+
+];
+
+flirtSignals.forEach(word=>{
+
+if(lower.includes(word)){
+
+flirt += 2;
+warmth += 2;
 
 }
 
 });
 
-negativeWords.forEach(word=>{
+/* TOXICITÉ */
 
-if(text.includes(word)){
+const toxicSignals = [
 
-negative++;
+"tg",
+"ta gueule",
+"ferme la",
+"casse toi",
+"bloqué",
+"bloquer",
+"arrête de forcer",
+"forceur",
+"gênant",
+"gênante",
+"jmen fou",
+"je m'en fou",
+"flemme",
+"stop"
+
+];
+
+toxicSignals.forEach(word=>{
+
+if(lower.includes(word)){
+
+coldness += 4;
 
 }
 
 });
+
+/* ÉNERGIE GÉNÉRALE */
+
+const caps =
+(text.match(/[A-Z]/g) || []).length;
+
+if(caps > 15){
+
+warmth += 1;
+
+}
+
+/* RIRE */
+
+if(
+lower.includes("mdrrrr") ||
+lower.includes("ahah") ||
+lower.includes("HAHA")
+){
+
+warmth += 2;
+
+}
+
+/* =========================================================
+SCORE FINAL
+========================================================= */
+
+const finalScore =
+
+(warmth + flirt + effort)
+-
+(coldness + dryness);
+
+/* =========================================================
+RÉSULTATS
+========================================================= */
 
 const result =
 document.getElementById("result");
@@ -343,23 +503,75 @@ document.getElementById("analysis");
 
 result.style.display = "block";
 
-if(positive >= 3 && negative <= 1){
+/* ANALYSES RANDOM */
+
+const acquittedTexts = [
+
+"La conversation dégage une vraie chaleur émotionnelle. Beaucoup d’intérêt et d’efforts visibles.",
+
+"Très bonne vibe détectée. Le tribunal remarque une forte complicité.",
+
+"L’énergie paraît naturelle, fluide et sincère. Beaucoup de green flags.",
+
+"Le tribunal détecte une forte alchimie émotionnelle."
+
+];
+
+const guiltyTexts = [
+
+"La conversation reste mitigée. Quelques signes positifs mais aussi de la distance émotionnelle.",
+
+"Le mood général paraît hésitant. Intérêt possible mais difficile à lire.",
+
+"Le tribunal détecte une vibe instable émotionnellement.",
+
+"La communication semble irrégulière et peu claire."
+
+];
+
+const condemnedTexts = [
+
+"Conversation très froide détectée. Peu d’investissement émotionnel visible.",
+
+"Le tribunal détecte plusieurs red flags et une énergie distante.",
+
+"La vibe paraît déséquilibrée ou forcée.",
+
+"Ghosting ou désintérêt émotionnel potentiel détecté."
+
+];
+
+/* VERDICT */
+
+if(finalScore >= 6){
 
 verdict.innerHTML =
 "🟢 ACQUITTÉ";
 
 analysis.innerHTML =
-"Très forte chaleur émotionnelle détectée. La conversation paraît naturelle, engageante et réciproque.";
+
+acquittedTexts[
+Math.floor(
+Math.random() *
+acquittedTexts.length
+)
+];
 
 }
 
-else if(negative >= 3){
+else if(finalScore <= -1){
 
 verdict.innerHTML =
 "🔴 CONDAMNÉ";
 
 analysis.innerHTML =
-"Conversation très froide détectée. Distance émotionnelle élevée et plusieurs red flags présents.";
+
+condemnedTexts[
+Math.floor(
+Math.random() *
+condemnedTexts.length
+)
+];
 
 }
 
@@ -369,9 +581,66 @@ verdict.innerHTML =
 "🟠 COUPABLE";
 
 analysis.innerHTML =
-"Conversation mitigée. Quelques signes positifs mais aussi de la froideur émotionnelle.";
+
+guiltyTexts[
+Math.floor(
+Math.random() *
+guiltyTexts.length
+)
+];
 
 }
+
+/* DÉTAILS */
+
+analysis.innerHTML +=
+
+`
+
+<br><br>
+
+🩷 Chaleur émotionnelle :
+${Math.max(0, warmth)}
+
+<br>
+
+✨ Efforts détectés :
+${Math.max(0, effort)}
+
+<br>
+
+💕 Flirt détecté :
+${Math.max(0, flirt)}
+
+<br>
+
+❄️ Froideur détectée :
+${Math.max(0, coldness)}
+
+<br>
+
+🪨 Sécheresse :
+${Math.max(0, dryness)}
+
+`;
+
+/* =========================================================
+RESET AUTOMATIQUE
+========================================================= */
+
+setTimeout(()=>{
+
+textarea.value = "";
+
+document
+.getElementById("preview")
+.style.display = "none";
+
+},700);
+
+/* =========================================================
+COMPTEUR GRATUIT
+========================================================= */
 
 if(!isLoggedIn){
 
@@ -388,34 +657,50 @@ updateFreeCounter();
 
 }
 
-function updateFreeCounter(){
+/* =========================================================
+CLICK OUTSIDE AUTH
+========================================================= */
 
-const isLoggedIn =
-localStorage.getItem("loggedIn");
+window.onclick = function(event){
 
-const counter =
-document.getElementById("freeCounter");
+const auth =
+document.getElementById("auth");
 
-if(isLoggedIn){
+if(event.target === auth){
 
-const username =
-localStorage.getItem("loggedUser");
-
-counter.innerHTML =
-"Connecté en tant que : " + username;
+closeAuth();
 
 }
 
-else{
+};
 
-counter.innerHTML =
-"Analyses gratuites restantes : " +
-freeAnalyses +
-"/5";
+/* =========================================================
+SCROLL
+========================================================= */
+
+function scrollToAnalyzer(){
+
+document
+.getElementById("analyzer")
+.scrollIntoView({
+behavior:"smooth"
+});
 
 }
 
+function scrollToSection(id){
+
+document
+.getElementById(id)
+.scrollIntoView({
+behavior:"smooth"
+});
+
 }
+
+/* =========================================================
+LOAD
+========================================================= */
 
 window.onload = () => {
 
@@ -425,39 +710,3 @@ toggleAuthMode();
 updateFreeCounter();
 
 };
-
-/* =========================================================
-AJOUTE AUSSI ÇA DANS LE HTML
-=========================================================
-
-1. REMPLACE LE BOUTON "Créer un compte" EN HAUT PAR :
-
-<button class="main-btn" onclick="openAuth()">
-Connexion
-</button>
-
----------------------------------------------------------
-
-2. AJOUTE ÇA JUSTE EN DESSOUS DU HEADER :
-
-<div
-id="freeCounter"
-style="
-padding:15px 8%;
-color:#ff73c7;
-font-weight:bold;
-"
->
-</div>
-
----------------------------------------------------------
-
-3. AJOUTE id="email" AU CHAMP EMAIL :
-
-<input
-type="email"
-id="email"
-placeholder="Adresse mail"
->
-
-========================================================= */
